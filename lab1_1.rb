@@ -4,38 +4,45 @@ print - Выводит строчку без \n
 # puts выводит и делает переход на следующию строку
 #puts "Рello world_puts"
 #print "hello world_print"
-
+# Задание 2
 # puts "Доброго времени суток #{ARGV[0]}"
 
 # puts String.instance_methods
 
 # puts "--------------------------------"
 # puts String.class.instance_methods
+# Задание 3
+# puts "Введите ваш любимы язык программирования"
 
-puts "Введите ваш любимы язык программирования"
+# lang= gets.chomp
 
-lang= gets.chomp
+# if lang=="Ruby"
+# 	puts "Вы подлиза"
+# elsif lang=="Python"
+# 	puts "Вы хороши собой"
+# elsif lang=="С++"
+# 	puts "Вы выбрали путь ситха"
+# elsif lang=="С#"
+# 	puts "Это хороший выбор"
+# elsif lang=="Prolog"
+# 	puts "А ты хорош"
+# elsif lang=="Kotlin"
+# 	puts "Любишь Андроид ? :("
+# end
 
-if lang=="Ruby"
-	puts "Вы подлиза"
-elsif lang=="Python"
-	puts "Вы хороши собой"
-elsif lang=="С++"
-	puts "Вы выбрали путь ситха"
-elsif lang=="С#"
-	puts "Это хороший выбор"
-elsif lang=="Prolog"
-	puts "А ты хорош"
-elsif lang=="Kotlin"
-	puts "Любишь Андроид ? :("
-end
-
-puts "Скоро полюбишь руби" if lang != "Ruby"
+# puts "Скоро полюбишь руби" if lang != "Ruby"
 
 
-case lang
-when "Ruby"
-	puts "Вы подлиза"
-when "Python"
-	puts "Вы хороши собой"
-end
+# case lang
+# when "Ruby"
+# 	puts "Вы подлиза"
+# when "Python"
+# 	puts "Вы хороши собой"
+# end
+
+#Задание 4
+
+puts "Введите команду ОС"
+comm=gets.chomp
+
+system(comm)
