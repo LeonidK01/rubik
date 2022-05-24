@@ -185,3 +185,60 @@ class Department_list
     return sum
   end
 end
+class Post
+  include Comparable
+  attr_reader :department,:name,:salary,:isfree
+  def initialize(department,name,salary,isfree)
+    self.department= department
+    self.name= name
+    self.salary=salary
+    self.isfree=isfree
+  end
+  def Post.isPost?(department,name,salary,isfree)
+    department.is_a?(String) & name.is_a?(String) & salary.is_a?(Integer) & (isfree.is_a?(TrueClass)|isfree.is_a?(FalseClass))
+  end
+   def Post.is_departments?(val)
+    Post.isPost?(val," ",1,true)
+  end
+   def Post.is_name?(val)
+    Post.isPost?("department",val,1,true)
+  end
+   def Post.is_salary?(val)
+    Post.isPost?("department","name",val,true)
+  end
+   def Post.is_isfree?(val)
+    Post.isPost?("department","name",1,val)
+  end
+  def department=(val)
+    @department=val if Post.is_departments?(val)
+  end
+  def name=(val)
+    @name =val if Post.is_name?(val)
+  end
+  def salary=(val) 
+    @salary = val if  Post.is_salary?(val)
+  end
+  def isfree=(val)
+    @isfree = val if  Post.is_isfree?(val)
+  end
+  def to_s()
+    tf={
+      true=>"да",
+      false=>"нет"
+    }
+    "Должность:#{self.name} отдел:#{self.department} зарплата:#{self.salary} занята: #{tf[self.isfree]}"
+  end
+  def <=>(val)
+  return 0  if (self.name== val.name) & (self.department== val.department)
+  return 1 if self.isfree &  !val.isfree
+  return -1
+  end
+  def as_hash 
+    {
+      "department"=>self.department,
+      "name"=>self.name,
+      "salary"=>self.salary,
+      "isfree"=>self.isfree
+    }
+  end
+end
