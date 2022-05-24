@@ -242,3 +242,123 @@ class Post
     }
   end
 end
+class Post_list
+  include Enumerable
+  def initialize(posts=[])
+    @post_list=posts if Post_list.is_Post?(posts) || posts.size==0
+    self.post_cursor= nil
+  end
+  def Post_list.is_Post?(posts)
+    c=true
+    posts.each{|x| c=false if !x.is_a?(Post)}
+    return c
+  end
+  def each()
+    for i in @post_list do
+      yield i
+    end
+  end
+  def isempty?()
+    @post_list.size==0
+  end
+  def post_cursor=(val)
+    @post_cursor=@post_list.find{|x| x.name== val} if !(self.isempty?)
+  end
+  def post_cursor()
+    return @post_cursor
+  end
+  def post_add(post)
+    @post_list.push(post) 
+  end
+  def post_cursor_delete()
+    if !(self.isempty?) 
+      @post_list.delete(self.post_cursor) 
+       self.post_cursor=nil 
+    end
+  end
+  def post_read()
+    sum=""
+    self.each{|x| sum+=(x.to_s+"\n")}
+    return sum
+  end
+  def post_cursor_read()
+    self.post_cursor.to_s
+  end
+  def post_cursor_update(val)
+      @post_list[@post_list.find_index{|x| x==self.post_cursor}]= val
+      self.post_cursor= val.name 
+  end
+  def to_s()
+    self.post_read()
+  end
+  def mass_hash()
+    list = []
+    @post_list.each{|x| list.push(x.as_hash)}
+    return list
+  end
+  end
+
+
+
+
+
+
+
+
+
+number="+89181311793"
+a=Department.new("A",number)
+b=Department.new("A","+89181311794")
+c=Department.new("Z","+89181311795")
+deps = Department_list.new()
+a.duties_add("работать")
+deps.Departments_add(a)
+deps.Departments_add(b)
+deps.Departments_add(c)
+deps.Departments_cursor="A"
+puts(deps)
+deps.Departments_cursor.duties_add("не работать")
+puts(deps)
+deps.Departments_cursor= "Z"
+puts(deps.Departments_cursor)
+deps.Department_cursor_delete()
+puts(deps)
+deps.export_from_txt("text.txt")
+di = Department_list.import_from_txt("text.txt")
+di.Departments_cursor= "Z"
+di.export_from_YAML("ya.yaml")
+ro =Department_list.import_from_YAML("ya.yaml")
+po1= Post.new("отдел продаж","продажник",2001,true)
+po2= Post.new("отдел закупок","закупщик",5000,true)
+po3= Post.new("клеар","уборщик",10000,false)
+po = Post_list.new()
+po.post_add(po1)
+po.post_add(po2)
+po.post_add(po3)
+puts(po)
+po.post_cursor= "продажник"
+puts(po.post_cursor)
+po.post_cursor="уборщик"
+po.post_cursor_delete()
+puts(po)
+po.post_cursor="продажник"
+po.post_cursor_update(po3)
+puts(po)
+puts(po.post_cursor)
+puts "\n\n\n\n\n"
+puts(po)
+puts "\n\n\n\n\n"
+puts(ro)
+ro.Departments_cursor="A"
+puts(ro.Departments_cursor)
+ro.Departments_cursor.post_add(po1)
+ro.Departments_cursor.post_add(po2)
+ro.Departments_cursor.post_add(po3)
+puts()
+puts(ro.to_s_full)
+ro.export_from_txt("text.txt")
+ro.export_from_YAML("ya.yaml")
+ro11 = Department_list.import_from_YAML("ya.yaml")
+puts(ro11.to_s_full)
+ro11.Departments_cursor="A"
+puts(ro11.Departments_cursor.post_free)
