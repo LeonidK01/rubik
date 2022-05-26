@@ -1,0 +1,184 @@
+require "yaml"
+class Department
+    include Comparable 
+    public attr_accessor :name
+    public attr_reader :number
+    def initialize(name,number,duties=[],post_list=Post_list.new())
+        self.name= name
+        self.number= number
+        @duties=duties
+        @duties_index_now=0
+        @post_list=post_list if Post_list.is_Post?(post_list)
+    end
+    def number=(val)
+      @number=val if Department.number?(val)
+    end
+    def duties_empty?()
+      @duties.size==0
+    end
+    def to_s()
+      return "название:#{self.name}  номер телефона:#{self.number}  обязанности:#{self.duties_read}"
+    end
+    def duties_add(dutie)
+      @duties.push(dutie).uniq!()
+    end
+    def duties_read()
+      sum=","
+      @duties.each_with_index do |x,ind| 
+        if(ind==@duties_index_now)
+          sum+="[#{x}],"
+        else
+          sum+="#{x},"
+        end
+      end
+      return sum
+    end
+    def duties_cursor(dutie)
+      @duties_index_now = @duties.find_index(dutie) if @duties.find_index(dutie)!= nil
+    end
+    def duties_cursor_read()
+      return @duties[duties_index_now].to_s if  !(self.duties_empty?) 
+    end
+    def duties_cursor_update(dutie)
+      @duties[@duties_index_now]= dutie if !((@duties.include?(dutie)) & (self.duties_empty?))
+    end
+    def duties_cursor_delete()
+      @duties.delete_at(@duties_index_now) if !(self.duties_empty?) 
+      @duties_index_now=0
+    end
+    def Department.number?(number)
+      return /\+[0-9]{11}/.match?(number)
+    end
+    def duties_size()
+      @duties.size()
+    end
+    def <=>(val)
+      return 0 if self.name== val.name || self.number== val.number
+      return 1 if self.duties_size() > val.duties_size()
+      return -1
+    end
+    def as_hash 
+      {
+        "name"=> self.name,
+        "number"=> self.number,
+        "duties"=> @duties,
+        "posts"=>@post_list.mass_hash
+      }
+    end
+    def to_s_full()
+      self.to_s()+" "+@post_list.to_s()
+    end
+    def post_cursor=(val)
+      @post_list.post_cursor=(val)
+    end
+    def post_cursor()
+      @post_list.post_cursor
+    end
+    def post_add(val)
+      @post_list.post_add(val)
+    end
+    def post_cursor_update(val)
+      @post_list.post_cursor_update(val)
+    end
+    def post_cursor_delete()
+      @post_list.post_cursor_delete()
+    end
+    def post_read()
+      @post_list.post_read()
+    end
+    def post_free()
+      @post_list.select{|x| x.isfree == false}
+    end
+end
+class Salary_constructor
+    attr_accessor :salary_param
+    def initialize()
+      
+    end
+    def create_salary(hash={})
+      self.salary_param=hash
+      salary= Fix_sal.new(hash[:fixsal])
+      salary=Rub_sal.new(salary,hash[:rub_sal])
+      salary=Percent_sal.new(salary,hash[:percent_sal])
+      salary=Fine_sal.new(salary,hash[:fine_sal])
+      salary=Prem_sal.new(salary,hash[:prem_sal])
+      salary
+    end
+  class Salary
+    def get_salary()
+      raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
+    end
+  end
+  class Fix_sal < Salary
+    def initialize(fixed)
+      @fixed =fixed
+    end
+    def get_salary()
+      @fixed
+    end
+  end
+  class Decorator_salary < Salary
+    attr_accessor :salary
+    def initialize(salary)
+      self.salary=salary
+    end
+    def get_salary
+      self.salary.get_salary
+    end
+  end
+  class Rub_sal < Decorator_salary
+    def initialize(salary,add_rub)
+      @add_rub=add_rub
+      super(salary)
+    end
+    def get_salary()
+      self.salary.get_salary + @add_rub
+    end
+  end
+  class Percent_sal < Decorator_salary
+    def initialize(salary,percent)
+      super(salary)
+      @percent=percent
+    end
+    def get_salary()
+      r=rand() 
+      salary=self.salary.get_salary
+     return salary + salary*@percent/100 if r<0.5
+     return salary
+    end
+  end
+  class Fine_sal < Decorator_salary
+    def initialize(salary,fine)
+      super(salary)
+      @fine=fine
+    end
+    def get_salary()
+      self.salary.get_salary -  @fine
+    end
+  end
+  class Prem_sal < Decorator_salary
+    def initialize(salary,percent)
+      super(salary)
+      @percent=percent
+    end
+    def get_salary()
+      salary=self.salary.get_salary
+     return salary + salary*@percent/100
+    end
+  end
+  end
+  def get_salary(val)
+     @salary= @sal_creator.create_salary(val).get_salary
+  end
+  def set_job_list(val)
+    @job_list=val
+  end
+  def new_jobs(employee,stavka)
+    job= Job.new(self,employee,Time.new.inspect,end_work="empty",stawka)
+    @job_list.push(job)
+  end
+  def delete_jobs(employee)
+    @job_list.select{|x| x.pasport==employee.pasport}.map{|x| x.end_work=Time.new.inspect}
+  end
+  
+end
