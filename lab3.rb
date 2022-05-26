@@ -238,3 +238,86 @@ class Post_list
     return list
   end
   end
+
+  class Employee
+    attr_reader :name,:sename,:father_name,:date_burth,:pasport,:phone
+    def initialize(name,sename,father_name,date_burth,pasport,phone)
+      self.name= name
+      self.sename= sename
+      self.father_name= father_name
+      self.date_burth= date_burth
+      self.pasport= pasport
+      self.phone= phone 
+    end
+    def Employee.is_name?(val)
+      val.is_a?(String)
+    end
+    def Employee.is_sename?(val)
+      val.is_a?(String)
+    end
+    def Employee.is_father_name?(val)
+      val.is_a?(String)
+    end
+    def Employee.is_date_burth?(val)
+      val.match?(/((0[1-9]{1}|[1-2]{1}[0-9]{1}|3[0-1]{1})\.(0[1-9]{1}|1[0-2]{1})\.(19[0-9]{2}|2[0-9]{3}))/)
+    end
+    def Employee.is_pasport?(val)
+      val.match?(/[0-9]{6}/)
+    end
+    def Employee.is_phone?(val)
+      val.match?(/\+[0-9]{11}/)
+    end
+    def name=(val)
+      @name=val if Employee.is_name?(val)
+    end
+    def sename=(val)
+      @sename=val Employee.is_sename?(val)
+    end
+    def father_name=(val)
+      @father_name=val Employee.is_father_name?(val)
+    end
+    def date_burth=(val)
+      @date_burth =val Employee.is_date_burth?(val)
+    end
+    def pasport=(val) 
+      @pasport =val Employee.is_pasport?(val)
+    end
+    def phone=(val)
+      @phone =val Employee.is_phone?(val)
+    end
+  end
+  class Skilled_employee < Employee
+    attr_reader :xp,:description
+    def initialize(name,sename,father_name,date_burth,pasport,phone,xp,description)
+      self.xp=xp
+      self.description=description
+      super(name,sename,father_name,date_burth,pasport,phone)
+    end
+    def xp=(val) 
+      @pasport =val Employee.is_xp?(val)
+    end
+    def description=(val)
+      @phone =val Employee.is_description?(val)
+    end
+    def Employee.is_xp?(val)
+      val.is_a?(Integer)
+    end
+    def Employee.is_description?(val)
+      val.is_a?(String)
+    end
+  end
+  
+  
+  class Employee_list
+    include Enumerable
+    def initialize(employees=[])
+      @employee_list=employees 
+    end
+  
+    def each()
+      for i in @employee_list do
+        yield i
+      end
+    end
+  
+  end
