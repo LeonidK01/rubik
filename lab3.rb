@@ -321,3 +321,45 @@ class Post_list
     end
   
   end
+  class Job
+    attr_accessor :post,:employee,:start_work,:end_work,:stawka
+    def initialize(post,employee,start_work,end_work="empty",stawka)
+      self.post= post
+      self.employee= employee
+      self.start_work= start_work
+      self.end_work= end_work
+      self.stawka= stawka
+    end
+    def as_hash
+      {
+        "order"=> self.order,
+        "employee"=> self.employee,
+        "start_work"=> self.start_work,
+        "end_work"=> self.end_work,
+        "stawka"=>self.stawka
+      }
+    end
+  end
+  
+  class Job_list
+    include Enumerable
+    def initialize(jobs=[])
+      @jobs_list=jobs 
+    end
+  
+    def each()
+      for i in @jobs_list do
+        yield i
+      end
+    end
+    def mass_hash()
+      list = []
+      @post_list.each{|x| list.push(x.as_hash)}
+      return list
+    end
+  end
+  al={fixsal:200,rub_sal: 30,percent_sal: 10,fine_sal: 100,prem_sal: 20}
+post = Post.new("отдел продаж","менеджер",sal,true)
+puts(post.salary)
+puts(post.as_hash)
+puts(post)
