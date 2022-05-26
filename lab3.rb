@@ -182,3 +182,59 @@ class Salary_constructor
   end
   
 end
+
+class Post_list
+  include Enumerable
+  def initialize(posts=[])
+    @post_list=posts if Post_list.is_Post?(posts) || posts.size==0
+    self.post_cursor= nil
+  end
+  def Post_list.is_Post?(posts)
+    c=true
+    posts.each{|x| c=false if !x.is_a?(Post)}
+    return c
+  end
+  def each()
+    for i in @post_list do
+      yield i
+    end
+  end
+  def isempty?()
+    @post_list.size==0
+  end
+  def post_cursor=(val)
+    @post_cursor=@post_list.find{|x| x.name== val} if !(self.isempty?)
+  end
+  def post_cursor()
+    return @post_cursor
+  end
+  def post_add(post)
+    @post_list.push(post)  if !(@post_list.include?(post))
+  end
+  def post_cursor_delete()
+    if !(self.isempty?) 
+      @post_list.delete(self.post_cursor) 
+       self.post_cursor=nil 
+    end
+  end
+  def post_read()
+    sum=""
+    self.each{|x| sum+=(x.to_s+"\n")}
+    return sum
+  end
+  def post_cursor_read()
+    self.post_cursor.to_s
+  end
+  def post_cursor_update(val)
+      @post_list[@post_list.find_index{|x| x==self.post_cursor}]= val
+      self.post_cursor= val.name 
+  end
+  def to_s()
+    self.post_read()
+  end
+  def mass_hash()
+    list = []
+    @post_list.each{|x| list.push(x.as_hash)}
+    return list
+  end
+  end
